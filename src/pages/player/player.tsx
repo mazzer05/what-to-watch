@@ -1,4 +1,10 @@
-export const Player = (): JSX.Element => (
+import { Film } from '../../types/types';
+
+type PlayerProps = {
+  film: Film;
+};
+
+export const Player = ({ film }: PlayerProps): JSX.Element => (
   <>
     <div className="visually-hidden">
       {/* inject:svg */}
@@ -91,7 +97,11 @@ export const Player = (): JSX.Element => (
       {/* endinject */}
     </div>
     <div className="player">
-      <video src="#" className="player__video" poster="img/player-poster.jpg" />
+      <video
+        src={film.srcVideo}
+        className="player__video"
+        poster={film.bgImage}
+      />
       <button type="button" className="player__exit">
         Exit
       </button>
