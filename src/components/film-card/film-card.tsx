@@ -16,6 +16,7 @@ export const FilmCard = ({
   const handleMouseMove = () => {
     onMouseMove(film.id);
   };
+
   return (
     <article
       className="small-film-card catalog__films-card"

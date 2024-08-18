@@ -101,6 +101,7 @@ export const Player = ({ film }: PlayerProps): JSX.Element => (
         src={film.srcVideo}
         className="player__video"
         poster={film.bgImage}
+        autoPlay
       />
       <button type="button" className="player__exit">
         Exit
