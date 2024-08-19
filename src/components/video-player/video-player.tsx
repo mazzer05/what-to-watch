@@ -6,7 +6,7 @@ type VideoPlayerProps = {
 
 export const VideoPlayer = ({ film }: VideoPlayerProps): JSX.Element => (
   <video
-    className="small-film-card__image"
+    className="player__video"
     src={film.srcVideo}
     autoPlay
     muted

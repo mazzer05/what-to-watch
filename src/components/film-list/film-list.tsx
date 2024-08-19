@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Film } from '../../types/types';
 import { FilmCard } from '../film-card/film-card';
 
@@ -7,14 +7,24 @@ type FilmsListProps = {
 };
 
 export const FilmsList = ({ films }: FilmsListProps): JSX.Element => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeFilm, setActiveFilm] = useState<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleFilmMouseMove = (id: number) => {
-    setActiveFilm(id);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => {
+      if (activeFilm !== id) {
+        setActiveFilm(id);
+      }
+    }, 1000);
   };
 
   const handleFilmMouseLeave = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
     setActiveFilm(null);
   };
 
@@ -24,6 +34,7 @@ export const FilmsList = ({ films }: FilmsListProps): JSX.Element => {
         <FilmCard
           key={film.id}
           film={film}
+          isActive={film.id === activeFilm}
           onMouseMove={handleFilmMouseMove}
           onMouseLeave={handleFilmMouseLeave}
         />

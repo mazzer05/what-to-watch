@@ -1,15 +1,18 @@
 import { Link } from 'react-router-dom';
 import { Film } from '../../types/types';
 import { AppRoutes } from '../../const';
+import { VideoPlayer } from '../video-player/video-player';
 
 type FilmCardProps = {
   film: Film;
+  isActive: boolean;
   onMouseMove?: (id: number) => void;
   onMouseLeave?: () => void;
 };
 
 export const FilmCard = ({
   film,
+  isActive = false,
   onMouseMove = () => void 0,
   onMouseLeave = () => void 0,
 }: FilmCardProps): JSX.Element => {
@@ -24,12 +27,16 @@ export const FilmCard = ({
       onMouseLeave={onMouseLeave}
     >
       <div className="small-film-card__image">
-        <img
-          src={film.previewImage}
-          alt="Fantastic Beasts: The Crimes of Grindelwald"
-          width={280}
-          height={175}
-        />
+        {isActive ? (
+          <VideoPlayer film={film} />
+        ) : (
+          <img
+            src={film.previewImage}
+            alt={film.title}
+            width={280}
+            height={175}
+          />
+        )}
       </div>
       <h3 className="small-film-card__title">
         <Link
