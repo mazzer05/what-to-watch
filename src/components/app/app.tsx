@@ -9,17 +9,15 @@ import { PageFilm } from '../../pages/film/page-film';
 import { AddReview } from '../../pages/add-review/add-review';
 import { Player } from '../../pages/player/player';
 import { PageNotFound } from '../../pages/page-not-found/page-not-found';
-import { Film } from '../../types/types';
+import { useAppSelector } from '../../hooks';
 
-type AppProps = {
-  films: Film[];
-};
+function App(): JSX.Element {
+  const films = useAppSelector((state) => state.films);
 
-function App({ films }: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={AppRoutes.Main} element={<Main films={films} />} />
+        <Route path={AppRoutes.Main} element={<Main />} />
         <Route path={AppRoutes.Login} element={<Login />} />
         <Route
           path={AppRoutes.MyList}
@@ -29,10 +27,7 @@ function App({ films }: AppProps): JSX.Element {
             </PrivateRoute>
           }
         />
-        <Route
-          path={`${AppRoutes.Film}/:id`}
-          element={<PageFilm film={films[3]} />}
-        />
+        <Route path={`${AppRoutes.Film}/:id`} element={<PageFilm film={films[3]} />} />
         <Route
           path={`${AppRoutes.AddReview}/:id/review`}
           element={
@@ -41,10 +36,7 @@ function App({ films }: AppProps): JSX.Element {
             </PrivateRoute>
           }
         />
-        <Route
-          path={`${AppRoutes.Player}/:id`}
-          element={<Player film={films[3]} />}
-        />
+        <Route path={`${AppRoutes.Player}/:id`} element={<Player film={films[3]} />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>

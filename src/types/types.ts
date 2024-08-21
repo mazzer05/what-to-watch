@@ -1,3 +1,5 @@
+import { genresTitles } from '../const';
+
 export type Film = {
   id: number;
   title: string;
@@ -22,3 +24,5 @@ export type Review = {
   rating: number;
   text: string;
 };
+
+export type GenreTitle = (typeof genresTitles)[number];

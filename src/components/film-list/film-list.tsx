@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { Film } from '../../types/types';
 import { FilmCard } from '../film-card/film-card';
-
 type FilmsListProps = {
   films: Film[];
 };
