@@ -1,13 +1,14 @@
+/* eslint-disable no-nested-ternary */
 import { Link } from 'react-router-dom';
 import { FilmsList } from '../../components/film-list/film-list';
 import { Film, GenreTitle } from '../../types/types';
 import { AppRoutes } from '../../const';
 import { GenresList } from '../../components/genres-list/genres-list';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { films as filmMock } from '../../mocks/films';
 import { ShowMore } from '../../components/show-more/show-more';
 import { useEffect } from 'react';
 import { setNumberOfFilms } from '../../store/action';
+import { logoutAction } from '../../store/api-action';
 
 export const Main = (): JSX.Element => {
   const genreMap: { [key: string]: string } = {
@@ -30,12 +31,19 @@ export const Main = (): JSX.Element => {
   const activeGenre: GenreTitle = useAppSelector((state) => state.genre);
   const numberOfFilms: number = useAppSelector((state) => state.numberOfFilms);
   const films: Film[] = useAppSelector((state) =>
-    activeGenre === 'All genres' ? state.films : state.films.filter((film) => film.genre === getSingularGenre(activeGenre))
+    activeGenre === 'All genres'
+      ? state.films
+      : state.films.filter((film) => film.genre === getSingularGenre(activeGenre))
   );
+  const promo: Film = useAppSelector((state) => state.promoFilm!);
 
   useEffect(() => {
     dispatch(setNumberOfFilms(8));
   }, [dispatch]);
+
+  if (!promo) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -55,7 +63,13 @@ export const Main = (): JSX.Element => {
             </g>
           </symbol>
           <symbol id="full-screen" viewBox="0 0 27 27">
-            <path fillRule="evenodd" clipRule="evenodd" d="M23.8571 0H16V3.14286H23.8571V11H27V3.14286V0H23.8571Z" fill="#FFF9D9" fillOpacity="0.7" />
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M23.8571 0H16V3.14286H23.8571V11H27V3.14286V0H23.8571Z"
+              fill="#FFF9D9"
+              fillOpacity="0.7"
+            />
             <path
               fillRule="evenodd"
               clipRule="evenodd"
@@ -94,8 +108,18 @@ export const Main = (): JSX.Element => {
             <title>Artboard</title>
             <desc>Created with Sketch.</desc>
             <g id="Artboard" stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
-              <polygon id="Line" fill="#EEE5B5" fillRule="nonzero" points="0 -1.11910481e-13 4 -1.11910481e-13 4 21 0 21" />
-              <polygon id="Line" fill="#EEE5B5" fillRule="nonzero" points="10 -1.11910481e-13 14 -1.11910481e-13 14 21 10 21" />
+              <polygon
+                id="Line"
+                fill="#EEE5B5"
+                fillRule="nonzero"
+                points="0 -1.11910481e-13 4 -1.11910481e-13 4 21 0 21"
+              />
+              <polygon
+                id="Line"
+                fill="#EEE5B5"
+                fillRule="nonzero"
+                points="10 -1.11910481e-13 14 -1.11910481e-13 14 21 10 21"
+              />
             </g>
           </symbol>
         </svg>
@@ -121,23 +145,30 @@ export const Main = (): JSX.Element => {
               </div>
             </li>
             <li className="user-block__item">
-              <a className="user-block__link">Sign out</a>
+              <a
+                className="user-block__link"
+                onClick={(): void => {
+                  dispatch(logoutAction());
+                }}
+              >
+                Sign out
+              </a>
             </li>
           </ul>
         </header>
         <div className="film-card__wrap">
           <div className="film-card__info">
             <div className="film-card__poster">
-              <img src="img/the-grand-budapest-hotel-poster.jpg" alt="The Grand Budapest Hotel poster" width={218} height={327} />
+              <img src={promo.posterImage} alt={`${promo.name} poster`} width={218} height={327} />
             </div>
             <div className="film-card__desc">
-              <h2 className="film-card__title">{filmMock[0].title}</h2>
+              <h2 className="film-card__title">{promo.name}</h2>
               <p className="film-card__meta">
-                <span className="film-card__genre">{filmMock[0].genre}</span>
-                <span className="film-card__year">{filmMock[0].date.getFullYear().toString()}</span>
+                <span className="film-card__genre">{promo.genre}</span>
+                <span className="film-card__year">{promo.released}</span>
               </p>
               <div className="film-card__buttons">
-                <Link className="btn btn--play film-card__button" to={`${AppRoutes.Player}/${filmMock[0].id}`}>
+                <Link className="btn btn--play film-card__button" to={`${AppRoutes.Player}/${promo.id}`}>
                   <svg viewBox="0 0 19 19" width={19} height={19}>
                     <use xlinkHref="#play-s" />
                   </svg>
@@ -158,7 +189,13 @@ export const Main = (): JSX.Element => {
         <section className="catalog">
           <h2 className="catalog__title visually-hidden">Catalog</h2>
           <GenresList />
-          {films.length > 0 ? <FilmsList films={films.slice(0, numberOfFilms)} /> : <p>Фильмы не найдены</p>}
+          {(() => {
+            if (films.length > 0) {
+              return <FilmsList films={films.slice(0, numberOfFilms)} />;
+            } else {
+              return <p>Фильмы не найдены</p>;
+            }
+          })()}
           <ShowMore filmsLength={films.length} />
         </section>
         <footer className="page-footer">

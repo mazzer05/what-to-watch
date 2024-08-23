@@ -98,9 +98,9 @@ export const Player = ({ film }: PlayerProps): JSX.Element => (
     </div>
     <div className="player">
       <video
-        src={film.srcVideo}
+        src={film.videoLink}
         className="player__video"
-        poster={film.bgImage}
+        poster={film.backgroundImage}
         autoPlay
       />
       <button type="button" className="player__exit">

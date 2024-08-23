@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { PrivateRoute } from '../private-route/private-route';
 
 import { Main } from '../../pages/main/main';
@@ -10,36 +10,46 @@ import { AddReview } from '../../pages/add-review/add-review';
 import { Player } from '../../pages/player/player';
 import { PageNotFound } from '../../pages/page-not-found/page-not-found';
 import { useAppSelector } from '../../hooks';
+import browserHistory from '../../services/browser-history';
+import HistoryRouter from '../history-route/history-route';
 
 function App(): JSX.Element {
   const films = useAppSelector((state) => state.films);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { authorizationStatus, isDataLoaded } = useAppSelector((state) => state);
+
   return (
-    <BrowserRouter>
+    <HistoryRouter history={browserHistory}>
       <Routes>
         <Route path={AppRoutes.Main} element={<Main />} />
-        <Route path={AppRoutes.Login} element={<Login />} />
+        <Route
+          path={AppRoutes.Login}
+          element={
+            authorizationStatus === AuthenticationStatus.Auth ? <Navigate to={AppRoutes.Main} /> : <Login />
+          }
+        />
         <Route
           path={AppRoutes.MyList}
           element={
-            <PrivateRoute authStatus={AuthenticationStatus.Auth}>
+            <PrivateRoute authStatus={authorizationStatus}>
               <MyList />
             </PrivateRoute>
           }
         />
-        <Route path={`${AppRoutes.Film}/:id`} element={<PageFilm film={films[3]} />} />
+        <Route path={`${AppRoutes.Film}/:id`} element={<PageFilm />} />
         <Route
           path={`${AppRoutes.AddReview}/:id/review`}
           element={
-            <PrivateRoute authStatus={AuthenticationStatus.Auth}>
-              <AddReview film={films[3]} />
+            <PrivateRoute authStatus={authorizationStatus}>
+              <AddReview />
             </PrivateRoute>
           }
         />
         <Route path={`${AppRoutes.Player}/:id`} element={<Player film={films[3]} />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-    </BrowserRouter>
+    </HistoryRouter>
   );
 }
 

@@ -32,7 +32,7 @@ export const FilmCard = ({
         ) : (
           <img
             src={film.previewImage}
-            alt={film.title}
+            alt={film.name}
             width={280}
             height={175}
           />
@@ -43,7 +43,7 @@ export const FilmCard = ({
           className="small-film-card__link"
           to={`${AppRoutes.Film}/${film.id}`}
         >
-          {film.title}
+          {film.name}
         </Link>
       </h3>
     </article>

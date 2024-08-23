@@ -1,8 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { reducer } from './reducer';
-import { setFilms } from './action';
-import { films } from '../mocks/films';
+import { createAPI } from '../services/api';
+import { redirect } from './middleware/redirect';
 
-export const store = configureStore({ reducer });
+const api = createAPI();
 
-store.dispatch(setFilms(films));
+export const store = configureStore({
+  reducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: {
+        extraArgument: api,
+      },
+    }).concat(redirect),
+});

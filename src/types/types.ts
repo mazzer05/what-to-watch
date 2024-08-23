@@ -2,27 +2,33 @@ import { genresTitles } from '../const';
 
 export type Film = {
   id: number;
-  title: string;
-  srcVideo: string;
+  name: string;
+  posterImage: string;
+  previewImage: string;
+  backgroundImage: string;
+  backgroundColor: string;
+  videoLink: string;
+  previewVideoLink: string;
   description: string;
   rating: number;
-  previewImage: string;
-  genre: string;
-  date: Date;
+  scoresCount: number;
   director: string;
-  starring: string[];
-  ratingType: 'Very good' | 'Good' | 'OK' | 'Bad';
-  bgImage: string;
-  filmDuration: Date;
-  reviews: Review[];
+  starring: [string];
+  runTime: number;
+  genre: string;
+  released: number;
+  isFavorite: boolean;
 };
 
-export type Review = {
+export type Comment = {
+  comment: string;
+  date: string;
   id: number;
-  name: string;
-  date: Date;
   rating: number;
-  text: string;
+  user: {
+    id: number;
+    name: string;
+  };
 };
 
 export type GenreTitle = (typeof genresTitles)[number];

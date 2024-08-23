@@ -1,20 +1,50 @@
-import { ChangeEvent, Fragment, useState } from 'react';
-import { STARS_COUNT } from '../../const';
+import { ChangeEvent, FormEvent, Fragment, useRef, useState } from 'react';
+import { AppRoutes, STARS_COUNT } from '../../const';
+import { useAppDispatch } from '../../hooks';
+import { useParams } from 'react-router-dom';
+import { putComments } from '../../store/api-action';
+import { redirectToRoute } from '../../store/action';
+
+type Review = {
+  filmId: string;
+  comment: string;
+  rating: number;
+};
 
 export const Form = (): JSX.Element => {
-  const [text, setText] = useState<string>('');
+  const comment = useRef<HTMLTextAreaElement | null>(null);
   const [rating, setRating] = useState<number | null>(null);
 
-  const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setText(e.target.value);
+  const dispatch = useAppDispatch();
+  const { id } = useParams<{ id: string }>();
+
+  const onSubmit = (review: Review) => {
+    if (id) {
+      dispatch(putComments(review));
+      dispatch(redirectToRoute(`${AppRoutes.Film}/${id}`));
+    }
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setRating(Number(e.target.value));
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+
+    if (comment.current !== null && rating !== null) {
+      if (id) {
+        onSubmit({
+          filmId: id.toString(),
+          comment: comment.current.value,
+          rating: rating,
+        });
+      }
+    }
+  };
+
+  const handleRatingChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    setRating(Number(evt.target.value));
   };
 
   return (
-    <form action="#" className="add-review__form">
+    <form action="#" className="add-review__form" onSubmit={handleSubmit}>
       <div className="rating">
         <div className="rating__stars">
           {Array.from({ length: STARS_COUNT }, (_, i) => (
@@ -25,13 +55,10 @@ export const Form = (): JSX.Element => {
                 type="radio"
                 name="rating"
                 defaultValue={STARS_COUNT - i}
-                checked={STARS_COUNT - i === rating}
-                onChange={handleInputChange}
+                checked={STARS_COUNT - i === Number(rating)}
+                onChange={handleRatingChange}
               />
-              <label
-                className="rating__label"
-                htmlFor={`star-${STARS_COUNT - i}`}
-              >
+              <label className="rating__label" htmlFor={`star-${STARS_COUNT - i}`}>
                 Rating {STARS_COUNT - i}
               </label>
             </Fragment>
@@ -44,11 +71,10 @@ export const Form = (): JSX.Element => {
           name="review-text"
           id="review-text"
           placeholder="Review text"
-          value={text}
-          onChange={handleTextareaChange}
+          ref={comment}
         />
         <div className="add-review__submit">
-          <button className="add-review__btn" type="submit" disabled>
+          <button className="add-review__btn" type="submit">
             Post
           </button>
         </div>
