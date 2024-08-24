@@ -34,6 +34,7 @@ export const genres = [
   'Romance',
   'Sci-Fi',
   'Thriller',
+  'Adventure',
 ] as const;
 
 export const genresTitles = [
@@ -47,6 +48,7 @@ export const genresTitles = [
   'Romance',
   'Sci-Fi',
   'Thrillers',
+  'Adventure',
 ] as const;
 
 export const STARS_COUNT = 10;

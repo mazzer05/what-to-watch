@@ -1,4 +1,4 @@
-import { FilmsList } from '../../components/film-list/film-list';
+import FilmsList from '../../components/film-list/film-list';
 import { useAppSelector } from '../../hooks';
 import { Film } from '../../types/types';
 
@@ -9,21 +9,12 @@ export const MyList = (): JSX.Element => {
     <>
       <div className="visually-hidden">
         {/* inject:svg */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          xmlnsXlink="http://www.w3.org/1999/xlink"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
           <symbol id="add" viewBox="0 0 19 20">
             {/* Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch */}
             <title>+</title>
             <desc>Created with Sketch.</desc>
-            <g
-              id="Page-1"
-              stroke="none"
-              strokeWidth={1}
-              fill="none"
-              fillRule="evenodd"
-            >
+            <g id="Page-1" stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
               <polygon
                 id="+"
                 fill="#EEE5B5"
@@ -73,13 +64,7 @@ export const MyList = (): JSX.Element => {
             {/* Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch */}
             <title>Artboard</title>
             <desc>Created with Sketch.</desc>
-            <g
-              id="Artboard"
-              stroke="none"
-              strokeWidth={1}
-              fill="none"
-              fillRule="evenodd"
-            >
+            <g id="Artboard" stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
               <polygon
                 id="Line"
                 fill="#EEE5B5"
@@ -110,12 +95,7 @@ export const MyList = (): JSX.Element => {
           <ul className="user-block">
             <li className="user-block__item">
               <div className="user-block__avatar">
-                <img
-                  src="img/avatar.jpg"
-                  alt="User avatar"
-                  width={63}
-                  height={63}
-                />
+                <img src="img/avatar.jpg" alt="User avatar" width={63} height={63} />
               </div>
             </li>
             <li className="user-block__item">

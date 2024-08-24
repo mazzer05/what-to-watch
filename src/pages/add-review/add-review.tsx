@@ -97,7 +97,7 @@ export const AddReview = () => {
         </svg>
         {/* endinject */}
       </div>
-      <section className="film-card film-card--full">
+      <section className="film-card film-card--full" style={{ backgroundColor: `${film.backgroundColor}` }}>
         <div className="film-card__header">
           <div className="film-card__bg">
             <img src={film.backgroundImage} alt="The Grand Budapest Hotel" />
@@ -135,7 +135,7 @@ export const AddReview = () => {
             </ul>
           </header>
           <div className="film-card__poster film-card__poster--small">
-            <img src={film.previewImage} alt="The Grand Budapest Hotel poster" width={218} height={327} />
+            <img src={film.posterImage} alt={`${film.name} poster`} width={218} height={327} />
           </div>
         </div>
         <div className="add-review">

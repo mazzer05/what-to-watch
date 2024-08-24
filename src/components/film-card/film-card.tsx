@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Film } from '../../types/types';
 import { AppRoutes } from '../../const';
+import { memo, useCallback } from 'react';
 import { VideoPlayer } from '../video-player/video-player';
 
 type FilmCardProps = {
@@ -10,15 +11,15 @@ type FilmCardProps = {
   onMouseLeave?: () => void;
 };
 
-export const FilmCard = ({
+const FilmCard = ({
   film,
   isActive = false,
   onMouseMove = () => void 0,
   onMouseLeave = () => void 0,
 }: FilmCardProps): JSX.Element => {
-  const handleMouseMove = () => {
+  const handleMouseMove = useCallback(() => {
     onMouseMove(film.id);
-  };
+  }, [onMouseMove, film.id]);
 
   return (
     <article
@@ -30,22 +31,16 @@ export const FilmCard = ({
         {isActive ? (
           <VideoPlayer film={film} />
         ) : (
-          <img
-            src={film.previewImage}
-            alt={film.name}
-            width={280}
-            height={175}
-          />
+          <img src={film.previewImage} alt={film.name} width={280} height={175} />
         )}
       </div>
       <h3 className="small-film-card__title">
-        <Link
-          className="small-film-card__link"
-          to={`${AppRoutes.Film}/${film.id}`}
-        >
+        <Link className="small-film-card__link" to={`${AppRoutes.Film}/${film.id}`}>
           {film.name}
         </Link>
       </h3>
     </article>
   );
 };
+
+export default memo(FilmCard, (prevProps, nextProps) => prevProps.isActive === nextProps.isActive);

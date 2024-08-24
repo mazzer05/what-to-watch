@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { Link } from 'react-router-dom';
-import { FilmsList } from '../../components/film-list/film-list';
+import FilmsList from '../../components/film-list/film-list';
 import { Film, GenreTitle } from '../../types/types';
 import { AppRoutes } from '../../const';
 import { GenresList } from '../../components/genres-list/genres-list';
@@ -127,7 +127,7 @@ export const Main = (): JSX.Element => {
       </div>
       <section className="film-card">
         <div className="film-card__bg">
-          <img src="img/bg-the-grand-budapest-hotel.jpg" alt="The Grand Budapest Hotel" />
+          <img src={promo.backgroundImage} alt={promo.name} />
         </div>
         <h1 className="visually-hidden">WTW</h1>
         <header className="page-header film-card__head">
