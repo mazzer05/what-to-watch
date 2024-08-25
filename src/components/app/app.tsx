@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { PrivateRoute } from '../private-route/private-route';
 
@@ -12,12 +13,16 @@ import { PageNotFound } from '../../pages/page-not-found/page-not-found';
 import { useAppSelector } from '../../hooks';
 import browserHistory from '../../services/browser-history';
 import HistoryRouter from '../history-route/history-route';
+import { getFilms, getIsDataLoaded } from '../../store/films-data/selectors';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { Spinner } from '../spinner/spinner';
 
 function App(): JSX.Element {
-  const films = useAppSelector((state) => state.films);
+  const films = useAppSelector(getFilms);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { authorizationStatus, isDataLoaded } = useAppSelector((state) => state);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const isDataLoaded = useAppSelector(getIsDataLoaded);
 
   return (
     <HistoryRouter history={browserHistory}>

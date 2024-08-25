@@ -1,9 +1,10 @@
 import FilmsList from '../../components/film-list/film-list';
 import { useAppSelector } from '../../hooks';
+import { getFilms } from '../../store/films-data/selectors';
 import { Film } from '../../types/types';
 
 export const MyList = (): JSX.Element => {
-  const films: Film[] = useAppSelector((state) => state.films);
+  const films: Film[] = useAppSelector(getFilms);
 
   return (
     <>

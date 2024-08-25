@@ -5,15 +5,19 @@ import { MoreLikeThis } from '../../components/more-like-this/more-like-this';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchComments, fetchFilm } from '../../store/api-action';
 import { useEffect } from 'react';
+import { getFilm, getIsDataLoaded } from '../../store/films-data/selectors';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { Spinner } from '../../components/spinner/spinner';
+import { UserInfo } from '../../components/user-info/user-info';
 
 export const PageFilm = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
 
-  const film = useAppSelector((state) => state.film);
-  const isLoading = useAppSelector((state) => state.isDataLoaded);
+  const film = useAppSelector(getFilm);
+  const isLoading = useAppSelector(getIsDataLoaded);
 
-  const authStatus = useAppSelector((state) => state.authorizationStatus);
+  const authStatus = useAppSelector(getAuthorizationStatus);
 
   useEffect(() => {
     if (id) {
@@ -23,7 +27,7 @@ export const PageFilm = (): JSX.Element => {
   }, [id, dispatch]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (!film) {
@@ -123,16 +127,7 @@ export const PageFilm = (): JSX.Element => {
                 <span className="logo__letter logo__letter--3">W</span>
               </Link>
             </div>
-            <ul className="user-block">
-              <li className="user-block__item">
-                <div className="user-block__avatar">
-                  <img src="img/avatar.jpg" alt="User avatar" width={63} height={63} />
-                </div>
-              </li>
-              <li className="user-block__item">
-                <a className="user-block__link">Sign out</a>
-              </li>
-            </ul>
+            <UserInfo />
           </header>
           <div className="film-card__wrap">
             <div className="film-card__desc">

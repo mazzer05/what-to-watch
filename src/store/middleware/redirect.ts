@@ -1,17 +1,17 @@
 import { Middleware } from 'redux';
-import { reducer } from '../reducer';
 import browserHistory from '../../services/browser-history';
 import { Action } from 'redux';
+import { rootReducer } from '../root-reducer';
 
-type Reducer = ReturnType<typeof reducer>;
+type Reducer = ReturnType<typeof rootReducer>;
 
 interface RedirectAction extends Action {
-  type: 'game/redirectToRoute';
+  type: 'film/redirectToRoute';
   payload: string;
 }
 
 export const redirect: Middleware<unknown, Reducer> = (_store) => (next) => (action: RedirectAction) => {
-  if (action.type === 'game/redirectToRoute') {
+  if (action.type === 'film/redirectToRoute') {
     browserHistory.push(action.payload);
   }
 

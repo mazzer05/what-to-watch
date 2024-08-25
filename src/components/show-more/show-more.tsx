@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { store } from '../../store';
-import { setNumberOfFilms } from '../../store/action';
+import { setNumberOfFilms } from '../../store/films-data/films-data';
+import { getNumberOfFilms } from '../../store/films-data/selectors';
 
 type ShowMoreProps = {
   filmsLength: number;
@@ -8,7 +8,7 @@ type ShowMoreProps = {
 
 export const ShowMore = ({ filmsLength }: ShowMoreProps): JSX.Element => {
   const dispatch = useAppDispatch();
-  const numberOfFilms = useAppSelector((state) => state.numberOfFilms);
+  const numberOfFilms = useAppSelector(getNumberOfFilms);
 
   const handelPressButton = () => {
     dispatch(setNumberOfFilms(numberOfFilms + 8));
@@ -17,7 +17,7 @@ export const ShowMore = ({ filmsLength }: ShowMoreProps): JSX.Element => {
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
-      {filmsLength > store.getState().numberOfFilms && (
+      {filmsLength > numberOfFilms && (
         <div className="catalog__more">
           <button className="catalog__button" type="button" onClick={handelPressButton}>
             Show more

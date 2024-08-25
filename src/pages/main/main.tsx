@@ -1,48 +1,33 @@
 /* eslint-disable no-nested-ternary */
 import { Link } from 'react-router-dom';
 import FilmsList from '../../components/film-list/film-list';
-import { Film, GenreTitle } from '../../types/types';
+import { Film } from '../../types/types';
 import { AppRoutes } from '../../const';
 import { GenresList } from '../../components/genres-list/genres-list';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { ShowMore } from '../../components/show-more/show-more';
+import { filterFilm, getNumberOfFilms, getPromoFilm } from '../../store/films-data/selectors';
+import { Spinner } from '../../components/spinner/spinner';
+import { UserInfo } from '../../components/user-info/user-info';
 import { useEffect } from 'react';
-import { setNumberOfFilms } from '../../store/action';
-import { logoutAction } from '../../store/api-action';
+import { setGenre } from '../../store/films-data/films-data';
 
 export const Main = (): JSX.Element => {
-  const genreMap: { [key: string]: string } = {
-    'All genres': 'All genres',
-    Comedies: 'Comedy',
-    Crime: 'Crime',
-    Documentary: 'Documentary',
-    Dramas: 'Drama',
-    Horror: 'Horror',
-    'Kids & Family': 'Kids & Family',
-    Romance: 'Romance',
-    'Sci-Fi': 'Sci-Fi',
-    Thrillers: 'Thriller',
-  };
-
-  const getSingularGenre = (pluralGenre: string): string => genreMap[pluralGenre] || pluralGenre;
-
   const dispatch = useAppDispatch();
 
-  const activeGenre: GenreTitle = useAppSelector((state) => state.genre);
-  const numberOfFilms: number = useAppSelector((state) => state.numberOfFilms);
-  const films: Film[] = useAppSelector((state) =>
-    activeGenre === 'All genres'
-      ? state.films
-      : state.films.filter((film) => film.genre === getSingularGenre(activeGenre))
-  );
-  const promo: Film = useAppSelector((state) => state.promoFilm!);
+  const numberOfFilms: number = useAppSelector(getNumberOfFilms);
+  const films: Film[] = useAppSelector(filterFilm);
+  const promo: Film | null = useAppSelector(getPromoFilm);
 
   useEffect(() => {
-    dispatch(setNumberOfFilms(8));
+    const genre = 'All genres';
+    return () => {
+      dispatch(setGenre(genre));
+    };
   }, [dispatch]);
 
   if (!promo) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   return (
@@ -138,23 +123,7 @@ export const Main = (): JSX.Element => {
               <span className="logo__letter logo__letter--3">W</span>
             </a>
           </div>
-          <ul className="user-block">
-            <li className="user-block__item">
-              <div className="user-block__avatar">
-                <img src="img/avatar.jpg" alt="User avatar" width={63} height={63} />
-              </div>
-            </li>
-            <li className="user-block__item">
-              <a
-                className="user-block__link"
-                onClick={(): void => {
-                  dispatch(logoutAction());
-                }}
-              >
-                Sign out
-              </a>
-            </li>
-          </ul>
+          <UserInfo />
         </header>
         <div className="film-card__wrap">
           <div className="film-card__info">

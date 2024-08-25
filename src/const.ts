@@ -13,6 +13,12 @@ export enum AuthenticationStatus {
   Unknown = 'UNKNOWN',
 }
 
+export enum NameSpace {
+  Data = 'DATA',
+  User = 'USER',
+  Film = 'FILM',
+}
+
 export enum APIRoute {
   Films = '/films',
   Film = '/films/:id',
@@ -23,32 +29,5 @@ export enum APIRoute {
   Login = '/login',
   Logout = '/logout',
 }
-
-export const genres = [
-  'Comedy',
-  'Crime',
-  'Documentary',
-  'Drama',
-  'Horror',
-  'Kids & Family',
-  'Romance',
-  'Sci-Fi',
-  'Thriller',
-  'Adventure',
-] as const;
-
-export const genresTitles = [
-  'All genres',
-  'Comedies',
-  'Crime',
-  'Documentary',
-  'Dramas',
-  'Horror',
-  'Kids & Family',
-  'Romance',
-  'Sci-Fi',
-  'Thrillers',
-  'Adventure',
-] as const;
 
 export const STARS_COUNT = 10;

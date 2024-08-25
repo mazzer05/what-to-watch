@@ -1,19 +1,24 @@
-import { GenreTitle } from '../../types/types';
+import { memo } from 'react';
 
 type GenreProps = {
-  name: GenreTitle;
+  name: string;
   isActive: boolean;
-  onClick: (genre: GenreTitle) => void;
+  onClick: (genre: string) => void;
 };
 
-export const Genre = ({ name, isActive, onClick }: GenreProps): JSX.Element => {
+const Genre = ({ name, isActive, onClick }: GenreProps): JSX.Element => {
   const handleGenreClick = () => {
     onClick(name);
   };
 
   return (
-    <li className={`catalog__genres-item ${isActive ? 'catalog__genres-item--active' : ''}`} onClick={handleGenreClick}>
+    <li
+      className={`catalog__genres-item ${isActive ? 'catalog__genres-item--active' : ''}`}
+      onClick={handleGenreClick}
+    >
       <a className="catalog__genres-link">{name}</a>
     </li>
   );
 };
+
+export default memo(Genre);

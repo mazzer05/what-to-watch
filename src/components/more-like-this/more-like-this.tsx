@@ -1,4 +1,5 @@
 import { useAppSelector } from '../../hooks';
+import { getFilms } from '../../store/films-data/selectors';
 import { Film } from '../../types/types';
 import FilmsList from '../film-list/film-list';
 
@@ -7,7 +8,7 @@ type MoreLikeThisProps = {
 };
 
 export const MoreLikeThis = ({ curFilm }: MoreLikeThisProps): JSX.Element => {
-  const films = useAppSelector((state) => state.films);
+  const films = useAppSelector(getFilms);
 
   const similarFilms = films.filter((film) => film.genre === curFilm.genre && film.id !== curFilm.id);
 

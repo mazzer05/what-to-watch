@@ -5,12 +5,13 @@ import { Details } from './details/details';
 // import { Reviews } from './reviews/reviews';
 import { useAppSelector } from '../../hooks';
 import { Reviews } from './reviews/reviews';
+import { getComments, getFilm } from '../../store/films-data/selectors';
 
 export const Tabs = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState('Overview');
 
-  const film: Film | null = useAppSelector((state) => state.film);
-  const comments: Comment[] = useAppSelector((state) => state.comments);
+  const film: Film | null = useAppSelector(getFilm);
+  const comments: Comment[] = useAppSelector(getComments);
   if (!film) {
     return <div></div>;
   }

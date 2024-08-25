@@ -1,16 +1,25 @@
-import { genresTitles } from '../../const';
+import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setGenre } from '../../store/action';
-import { GenreTitle } from '../../types/types';
-import { Genre } from '../genre/genre';
+import { setGenre } from '../../store/films-data/films-data';
+import { getFilms, getGenre } from '../../store/films-data/selectors';
+import Genre from '../genre/genre';
 
 export const GenresList = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const activeGenre = useAppSelector((state) => state.genre);
+  const activeGenre = useAppSelector(getGenre);
+  const films = useAppSelector(getFilms);
 
-  const handleGenreClick = (genre: GenreTitle) => {
-    dispatch(setGenre(genre));
-  };
+  const handleGenreClick = useCallback(
+    (genre: string) => {
+      dispatch(setGenre(genre));
+    },
+    [dispatch]
+  );
+
+  const genresTitlesSet = new Set<string>();
+  genresTitlesSet.add('All genres');
+  films.map((film) => genresTitlesSet.add(film.genre));
+  const genresTitles = Array.from(genresTitlesSet);
 
   return (
     <ul className="catalog__genres-list">

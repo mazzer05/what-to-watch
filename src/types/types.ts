@@ -1,5 +1,3 @@
-import { genresTitles } from '../const';
-
 export type Film = {
   id: number;
   name: string;
@@ -30,5 +28,3 @@ export type Comment = {
     name: string;
   };
 };
-
-export type GenreTitle = (typeof genresTitles)[number];

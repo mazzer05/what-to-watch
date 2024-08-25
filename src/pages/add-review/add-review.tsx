@@ -3,12 +3,14 @@ import { Form } from '../../components/form/form';
 import { AppRoutes } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchFilm } from '../../store/api-action';
+import { getFilm } from '../../store/films-data/selectors';
+import { UserInfo } from '../../components/user-info/user-info';
 
 export const AddReview = () => {
   const dispatch = useAppDispatch();
 
   const { id } = useParams<{ id: string }>();
-  const film = useAppSelector((state) => state.film);
+  const film = useAppSelector(getFilm);
 
   if (id && film) {
     if (Number(id) !== film.id) {
@@ -123,16 +125,7 @@ export const AddReview = () => {
                 </li>
               </ul>
             </nav>
-            <ul className="user-block">
-              <li className="user-block__item">
-                <div className="user-block__avatar">
-                  <img src="img/avatar.jpg" alt="User avatar" width={63} height={63} />
-                </div>
-              </li>
-              <li className="user-block__item">
-                <a className="user-block__link">Sign out</a>
-              </li>
-            </ul>
+            <UserInfo />
           </header>
           <div className="film-card__poster film-card__poster--small">
             <img src={film.posterImage} alt={`${film.name} poster`} width={218} height={327} />
