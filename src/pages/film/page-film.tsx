@@ -7,7 +7,7 @@ import { fetchComments, fetchFilm } from '../../store/api-action';
 import { useEffect } from 'react';
 import { getFilm, getIsDataLoaded } from '../../store/films-data/selectors';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
-import { Spinner } from '../../components/spinner/spinner';
+import { MyListButton } from '../../components/my-list-button/my-list-button';
 import { UserInfo } from '../../components/user-info/user-info';
 
 export const PageFilm = (): JSX.Element => {
@@ -27,7 +27,7 @@ export const PageFilm = (): JSX.Element => {
   }, [id, dispatch]);
 
   if (isLoading) {
-    return <Spinner />;
+    return <div>Loading...</div>;
   }
 
   if (!film) {
@@ -145,12 +145,7 @@ export const PageFilm = (): JSX.Element => {
                 </Link>
                 {authStatus === AuthenticationStatus.Auth && (
                   <>
-                    <Link className="btn btn--list film-card__button" to={AppRoutes.MyList}>
-                      <svg viewBox="0 0 19 20" width={19} height={20}>
-                        <use xlinkHref="#add" />
-                      </svg>
-                      <span>My list</span>
-                    </Link>
+                    <MyListButton film={film} />
                     <Link className="btn film-card__button" to={`${AppRoutes.AddReview}/${film.id}/review`}>
                       Add review
                     </Link>

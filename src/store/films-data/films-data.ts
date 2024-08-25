@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { FilmData } from '../../types/state';
 import { NameSpace } from '../../const';
-import { fetchComments, fetchFilm, fetchFilms, fetchPromo } from '../api-action';
+import { fetchComments, fetchFilm, fetchFilms, fetchIsFavorite, fetchPromo } from '../api-action';
 
 const initialState: FilmData = {
   films: [],
   film: null,
+  favoritesFilms: [],
   genre: 'All genres',
   promoFilm: null,
   comments: [],
@@ -53,6 +54,13 @@ export const filmsData = createSlice({
       })
       .addCase(fetchPromo.fulfilled, (state, action) => {
         state.promoFilm = action.payload;
+        state.isDataLoaded = false;
+      })
+      .addCase(fetchIsFavorite.pending, (state, action) => {
+        state.isDataLoaded = true;
+      })
+      .addCase(fetchIsFavorite.fulfilled, (state, action) => {
+        state.favoritesFilms = action.payload;
         state.isDataLoaded = false;
       });
   },

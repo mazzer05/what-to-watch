@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
-import { AppDispatch, State } from '../types/state';
+import { AppDispatch, FilmData, State } from '../types/state';
 import { APIRoute, AppRoutes } from '../const';
 import { redirectToRoute } from './action';
 import { AuthData } from '../types/auth-data';
@@ -62,6 +62,19 @@ export const fetchComments = createAsyncThunk<
   return data;
 });
 
+export const fetchIsFavorite = createAsyncThunk<
+  Film[],
+  undefined,
+  {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+  }
+>('data/fetchIsFavorite', async (_arg, { dispatch, extra: api }) => {
+  const { data } = await api.get<Film[]>(APIRoute.Favorite);
+  return data;
+});
+
 export const putComments = createAsyncThunk<
   void,
   { filmId: string; comment: string; rating: number },
@@ -74,6 +87,20 @@ export const putComments = createAsyncThunk<
   await api.post<CommentData>(`${APIRoute.Comments}/${filmId}`, { comment, rating });
 });
 
+export const putIsFavorite = createAsyncThunk<
+  void,
+  { filmId: string; status: number },
+  {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+  }
+>('data/putIsFavorite', async ({ filmId, status }, { dispatch, extra: api }) => {
+  if (!filmId) {
+    throw new Error('Film ID is required');
+  }
+  await api.post<FilmData>(`${APIRoute.Favorite}/${filmId}/${status}`);
+});
 export const checkLoginAction = createAsyncThunk<
   void,
   undefined,
@@ -83,7 +110,8 @@ export const checkLoginAction = createAsyncThunk<
     extra: AxiosInstance;
   }
 >('user/checkLogin', async (_arg, { dispatch, extra: api }) => {
-  await api.get(APIRoute.Login);
+  const { data } = await api.get<UserData>(APIRoute.Login);
+  dispatch(setUserInfo({ avatarUrl: data.avatarUrl, name: data.name }));
 });
 
 export const loginAction = createAsyncThunk<

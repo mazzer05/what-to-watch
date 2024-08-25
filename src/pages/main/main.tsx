@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import FilmsList from '../../components/film-list/film-list';
 import { Film } from '../../types/types';
-import { AppRoutes } from '../../const';
+import { AppRoutes, AuthenticationStatus } from '../../const';
 import { GenresList } from '../../components/genres-list/genres-list';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { ShowMore } from '../../components/show-more/show-more';
@@ -11,6 +11,8 @@ import { Spinner } from '../../components/spinner/spinner';
 import { UserInfo } from '../../components/user-info/user-info';
 import { useEffect } from 'react';
 import { setGenre } from '../../store/films-data/films-data';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { MyListButton } from '../../components/my-list-button/my-list-button';
 
 export const Main = (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -18,6 +20,7 @@ export const Main = (): JSX.Element => {
   const numberOfFilms: number = useAppSelector(getNumberOfFilms);
   const films: Film[] = useAppSelector(filterFilm);
   const promo: Film | null = useAppSelector(getPromoFilm);
+  const authStatus = useAppSelector(getAuthorizationStatus);
 
   useEffect(() => {
     const genre = 'All genres';
@@ -143,12 +146,7 @@ export const Main = (): JSX.Element => {
                   </svg>
                   <span>Play</span>
                 </Link>
-                <Link className="btn btn--list film-card__button" to={AppRoutes.MyList}>
-                  <svg viewBox="0 0 19 20" width={19} height={20}>
-                    <use xlinkHref="#add" />
-                  </svg>
-                  <span>My list</span>
-                </Link>
+                {authStatus === AuthenticationStatus.Auth && <MyListButton film={promo} />}
               </div>
             </div>
           </div>

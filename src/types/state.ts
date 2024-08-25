@@ -10,6 +10,7 @@ export type UserProcess = {
 
 export type FilmData = {
   films: Film[];
+  favoritesFilms: Film[];
   genre: string;
   film: Film | null;
   promoFilm: Film | null;

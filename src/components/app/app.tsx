@@ -15,7 +15,6 @@ import browserHistory from '../../services/browser-history';
 import HistoryRouter from '../history-route/history-route';
 import { getFilms, getIsDataLoaded } from '../../store/films-data/selectors';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
-import { Spinner } from '../spinner/spinner';
 
 function App(): JSX.Element {
   const films = useAppSelector(getFilms);
@@ -51,7 +50,7 @@ function App(): JSX.Element {
             </PrivateRoute>
           }
         />
-        <Route path={`${AppRoutes.Player}/:id`} element={<Player film={films[3]} />} />
+        <Route path={`${AppRoutes.Player}/:id`} element={<Player />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </HistoryRouter>
