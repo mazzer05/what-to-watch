@@ -3,7 +3,7 @@ import { AppRoutes } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { redirectToRoute } from '../../store/action';
 import { getFilm, getIsDataLoaded } from '../../store/films-data/selectors';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchFilm } from '../../store/api-action';
 import { Spinner } from '../../components/spinner/spinner';
 import { Film } from '../../types/types';
@@ -22,7 +22,9 @@ export const Player = (): JSX.Element => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [showControls, setShowControls] = useState(true);
   const [showRemainingTime, setShowRemainingTime] = useState(false);
+  const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -79,7 +81,20 @@ export const Player = (): JSX.Element => {
       videoRef.current.currentTime = newTime;
       setCurrentTime(newTime);
     }
+    resetHideControlsTimeout();
   };
+
+  const resetHideControlsTimeout = useCallback(() => {
+    if (hideControlsTimeout.current) {
+      clearTimeout(hideControlsTimeout.current);
+    }
+    setShowControls(true);
+    if (isPlaying) {
+      hideControlsTimeout.current = setTimeout(() => {
+        setShowControls(false);
+      }, 5000);
+    }
+  }, [isPlaying]);
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -111,7 +126,17 @@ export const Player = (): JSX.Element => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging]);
+  }, [isDragging, handleMouseMove]);
+
+  useEffect(() => {
+    document.addEventListener('mousemove', resetHideControlsTimeout);
+    document.addEventListener('mouseleave', resetHideControlsTimeout);
+
+    return () => {
+      document.removeEventListener('mousemove', resetHideControlsTimeout);
+      document.removeEventListener('mouseleave', resetHideControlsTimeout);
+    };
+  }, [resetHideControlsTimeout]);
 
   if (isLoading) {
     return <Spinner />;
@@ -133,7 +158,11 @@ export const Player = (): JSX.Element => {
             </svg>
             {/* endinject */}
           </div>
-          <div className="player" ref={playerRef}>
+          <div
+            className={`player ${showControls ? '' : ' player--hide-controls'}`}
+            style={{ cursor: showControls ? 'default' : 'none' }}
+            ref={playerRef}
+          >
             <video
               src={film.videoLink}
               ref={videoRef}
@@ -144,48 +173,52 @@ export const Player = (): JSX.Element => {
               onClick={handlePlayPause}
               onEnded={handleVideoEnd}
             />
-            <button
-              type="button"
-              className="player__exit"
-              onClick={() => dispatch(redirectToRoute(`${AppRoutes.Film}/${film.id}`))}
-            >
-              Exit
-            </button>
-            <div className="player__controls">
-              <div className="player__controls-row">
-                <div
-                  className="player__time"
-                  ref={progressRef}
-                  onClick={handleProgressClick}
-                  onMouseDown={handleMouseDown}
+            {showControls && (
+              <>
+                <button
+                  type="button"
+                  className="player__exit"
+                  onClick={() => dispatch(redirectToRoute(`${AppRoutes.Film}/${film.id}`))}
                 >
-                  <progress className="player__progress" value={currentTime} max={duration} />
-                  <div className="player__toggler" style={{ left: `${(currentTime / duration) * 100}%` }}>
-                    Toggler
+                  Exit
+                </button>
+                <div className="player__controls">
+                  <div className="player__controls-row">
+                    <div
+                      className="player__time"
+                      ref={progressRef}
+                      onClick={handleProgressClick}
+                      onMouseDown={handleMouseDown}
+                    >
+                      <progress className="player__progress" value={currentTime} max={duration} />
+                      <div className="player__toggler" style={{ left: `${(currentTime / duration) * 100}%` }}>
+                        Toggler
+                      </div>
+                    </div>
+                    <div className="player__time-value" onClick={toggleTimeDisplay}>
+                      {showRemainingTime
+                        ? `-${new Date((duration - currentTime) * 1000).toISOString().substr(11, 8)}`
+                        : new Date(currentTime * 1000).toISOString().substr(11, 8)}
+                    </div>
+                  </div>
+                  <div className="player__controls-row">
+                    <button type="button" className="player__play" onClick={handlePlayPause}>
+                      <svg viewBox="0 0 19 19" width="19" height="19">
+                        <use xlinkHref={isPlaying ? '#pause' : '#play-s'} />
+                      </svg>
+                      <span>{isPlaying ? 'Pause' : 'Play'}</span>
+                    </button>
+                    <div className="player__name">{film.name}</div>
+                    <button type="button" className="player__full-screen" onClick={handleFullScreen}>
+                      <svg viewBox="0 0 27 27" width={27} height={27}>
+                        <use xlinkHref="#full-screen" />
+                      </svg>
+                      <span>Full screen</span>
+                    </button>
                   </div>
                 </div>
-                <div className="player__time-value" onClick={toggleTimeDisplay}>
-                  {showRemainingTime
-                    ? `-${new Date((duration - currentTime) * 1000).toISOString().substr(11, 8)}`
-                    : new Date(currentTime * 1000).toISOString().substr(11, 8)}
-                </div>
-              </div>
-              <div className="player__controls-row">
-                <button type="button" className="player__play" onClick={handlePlayPause}>
-                  <svg viewBox="0 0 19 19" width="19" height="19">
-                    <use xlinkHref={isPlaying ? '#pause' : '#play-s'} />
-                  </svg>
-                  <span>{isPlaying ? 'Pause' : 'Play'}</span>
-                </button>
-                <div className="player__name">{film.name}</div>
-                <button type="button" className="player__full-screen" onClick={handleFullScreen}>
-                  <svg viewBox="0 0 27 27" width={27} height={27}>
-                    <use xlinkHref="#full-screen" />
-                  </svg>
-                  <span>Full screen</span>
-                </button>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </>
       );
