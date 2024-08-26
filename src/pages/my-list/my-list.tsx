@@ -6,7 +6,7 @@ import { getFavoritesFilms, getIsDataLoaded } from '../../store/films-data/selec
 import { Film } from '../../types/types';
 import { AppRoutes } from '../../const';
 import { useEffect } from 'react';
-import { fetchIsFavorite } from '../../store/api-action';
+import { fetchIsFavorite, fetchPromo } from '../../store/api-action';
 import { Spinner } from '../../components/spinner/spinner';
 
 export const MyList = (): JSX.Element => {
@@ -16,6 +16,9 @@ export const MyList = (): JSX.Element => {
 
   useEffect(() => {
     dispatch(fetchIsFavorite());
+    return () => {
+      dispatch(fetchPromo());
+    };
   }, [dispatch]);
 
   if (isLoading) {
