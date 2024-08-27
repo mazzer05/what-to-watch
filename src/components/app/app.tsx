@@ -10,14 +10,17 @@ import { PageFilm } from '../../pages/film/page-film';
 import { AddReview } from '../../pages/add-review/add-review';
 import { Player } from '../../pages/player/player';
 import { PageNotFound } from '../../pages/page-not-found/page-not-found';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import browserHistory from '../../services/browser-history';
 import HistoryRouter from '../history-route/history-route';
 import { getFilms, getIsDataLoaded } from '../../store/films-data/selectors';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { useEffect } from 'react';
+import { checkLoginAction } from '../../store/api-action';
 
 function App(): JSX.Element {
   const films = useAppSelector(getFilms);
+  const dispatch = useAppDispatch();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const authorizationStatus = useAppSelector(getAuthorizationStatus);

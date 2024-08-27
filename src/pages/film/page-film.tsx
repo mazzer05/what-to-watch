@@ -21,27 +21,38 @@ export const PageFilm = (): JSX.Element => {
   const authStatus = useAppSelector(getAuthorizationStatus);
 
   const [isFavorite, setIsFavorite] = useState(film?.isFavorite);
+  const [isUpdate, setIsUpdate] = useState(false);
 
   useEffect(() => {
-    const fetching = async () => {
+    const fetching = () => {
       if (id) {
-        await dispatch(fetchFilm({ id }));
-        await dispatch(fetchComments({ id }));
+        dispatch(fetchFilm({ id }));
+        dispatch(fetchComments({ id }));
       }
     };
-    fetching();
-  }, [id, dispatch]);
 
-  useEffect(() => {
-    if (film) {
+    if (!film || film.id.toString() !== id) {
+      fetching();
+    } else {
       setIsFavorite(film.isFavorite);
     }
-  }, [film]);
+  }, [film, id, dispatch]);
+
+  useEffect(
+    () => () => {
+      if (id && isUpdate) {
+        dispatch(fetchFilm({ id }));
+        setIsUpdate(false);
+      }
+    },
+    [id, isUpdate, dispatch]
+  );
 
   const handleMyListButtonClick = () => {
     if (film) {
       const newStatus = !isFavorite;
       setIsFavorite(newStatus);
+      setIsUpdate(true);
       dispatch(putIsFavorite({ filmId: film.id.toString(), status: newStatus ? 1 : 0 }));
     }
   };

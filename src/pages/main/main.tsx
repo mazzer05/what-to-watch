@@ -2,34 +2,57 @@
 import { Link } from 'react-router-dom';
 import FilmsList from '../../components/film-list/film-list';
 import { Film } from '../../types/types';
-import { AppRoutes } from '../../const';
+import { AppRoutes, AuthenticationStatus } from '../../const';
 import { GenresList } from '../../components/genres-list/genres-list';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { ShowMore } from '../../components/show-more/show-more';
-import { filterFilm, getNumberOfFilms, getPromoFilm } from '../../store/films-data/selectors';
+import {
+  filterFilm,
+  getIsDataLoaded,
+  getNumberOfFilms,
+  getPromoFilm,
+} from '../../store/films-data/selectors';
 import { Spinner } from '../../components/spinner/spinner';
 import { UserInfo } from '../../components/user-info/user-info';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { setGenre } from '../../store/films-data/films-data';
-// import { getAuthorizationStatus } from '../../store/user-process/selectors';
-// import { MyListButton } from '../../components/my-list-button/my-list-button';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { MyListButton } from '../../components/my-list-button/my-list-button';
+import { fetchPromo, putIsFavorite } from '../../store/api-action';
 
 export const Main = (): JSX.Element => {
   const dispatch = useAppDispatch();
-
   const numberOfFilms: number = useAppSelector(getNumberOfFilms);
   const films: Film[] = useAppSelector(filterFilm);
   const promo: Film | null = useAppSelector(getPromoFilm);
-  // const authStatus = useAppSelector(getAuthorizationStatus);
+  const authStatus = useAppSelector(getAuthorizationStatus);
+  const isLoading = useAppSelector(getIsDataLoaded);
+
+  const [isFavorite, setIsFavorite] = useState(promo?.isFavorite);
 
   useEffect(() => {
+    dispatch(fetchPromo());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (promo) {
+      setIsFavorite(promo.isFavorite);
+    }
     const genre = 'All genres';
     return () => {
       dispatch(setGenre(genre));
     };
-  }, [dispatch]);
+  }, [promo, dispatch]);
 
-  if (!promo) {
+  const handleMyListButtonClick = () => {
+    if (promo) {
+      const newStatus = !isFavorite;
+      setIsFavorite(newStatus);
+      dispatch(putIsFavorite({ filmId: promo.id.toString(), status: newStatus ? 1 : 0 }));
+    }
+  };
+
+  if (!promo || isLoading) {
     return <Spinner />;
   }
 
@@ -120,11 +143,11 @@ export const Main = (): JSX.Element => {
         <h1 className="visually-hidden">WTW</h1>
         <header className="page-header film-card__head">
           <div className="logo">
-            <a className="logo__link">
+            <div className="logo__link">
               <span className="logo__letter logo__letter--1">W</span>
               <span className="logo__letter logo__letter--2">T</span>
               <span className="logo__letter logo__letter--3">W</span>
-            </a>
+            </div>
           </div>
           <UserInfo />
         </header>
@@ -146,7 +169,9 @@ export const Main = (): JSX.Element => {
                   </svg>
                   <span>Play</span>
                 </Link>
-                {/* {authStatus === AuthenticationStatus.Auth && <MyListButton film={promo} />} */}
+                {authStatus === AuthenticationStatus.Auth && (
+                  <MyListButton isFavorite={isFavorite || false} onClick={handleMyListButtonClick} />
+                )}
               </div>
             </div>
           </div>
@@ -167,11 +192,11 @@ export const Main = (): JSX.Element => {
         </section>
         <footer className="page-footer">
           <div className="logo">
-            <a className="logo__link logo__link--light">
+            <Link className="logo__link logo__link--light" to={AppRoutes.Main}>
               <span className="logo__letter logo__letter--1">W</span>
               <span className="logo__letter logo__letter--2">T</span>
               <span className="logo__letter logo__letter--3">W</span>
-            </a>
+            </Link>
           </div>
           <div className="copyright">
             <p>© 2019 What to watch Ltd.</p>

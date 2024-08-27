@@ -5,11 +5,10 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { checkLoginAction, fetchFilms, fetchPromo } from './store/api-action';
+import { checkLoginAction, fetchFilms } from './store/api-action';
 
 store.dispatch(checkLoginAction());
 store.dispatch(fetchFilms());
-store.dispatch(fetchPromo());
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
