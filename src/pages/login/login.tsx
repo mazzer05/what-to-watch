@@ -84,7 +84,7 @@ export const Login = (): JSX.Element => {
           <symbol id="pause" viewBox="0 0 14 21">
             {/* Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch */}
             <title>Artboard</title>
-            <desc>Created with Sketch.</desc>
+            <desc>Created with Sketching.</desc>
             <g id="Artboard" stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
               <polygon
                 id="Line"
